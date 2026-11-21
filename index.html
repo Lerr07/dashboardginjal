@@ -15,7 +15,7 @@
 <style>
   :root{
     --bg:#080d15; --panel:#101a28; --panel2:#0b1420; --line:#1d2a3c;
-    --text:#e7eef8; --muted:#7f93ac;
+    --text:#f4f8fd; --muted:#aec2da;
     --teal:#2dd4bf; --blue:#4c9df8; --amber:#f5a524; --high:#fb7c5b; --severe:#e8445f;
   }
   *{box-sizing:border-box}
@@ -42,17 +42,17 @@
     color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
   }
   .brand h1{font-size:15px;font-weight:600;margin:0;letter-spacing:-.01em}
-  .brand p{margin:2px 0 0;font-size:11px;color:var(--muted);letter-spacing:.02em}
+  .brand p{margin:2px 0 0;font-size:12px;color:var(--muted);letter-spacing:.02em}
   .top-meta{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .pill{
-    font-size:11px;color:var(--muted);border:1px solid var(--line);background:var(--panel2);
+    font-size:12px;color:var(--muted);border:1px solid var(--line);background:var(--panel2);
     padding:6px 10px;border-radius:999px;white-space:nowrap;
   }
   .pill b{color:var(--text);font-weight:500}
 
   .toolbar{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:20px 0 18px}
   .field{display:flex;flex-direction:column;gap:5px}
-  .field label{font-size:10px;text-transform:uppercase;letter-spacing:.10em;color:var(--muted)}
+  .field label{font-size:11px;text-transform:uppercase;letter-spacing:.10em;color:var(--muted)}
   select.f{
     appearance:none;background:var(--panel2);color:var(--text);border:1px solid var(--line);
     border-radius:10px;padding:9px 32px 9px 12px;font-size:13px;font-family:inherit;cursor:pointer;
@@ -70,16 +70,16 @@
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px}
   .kpi{padding:16px 16px 14px;position:relative;overflow:hidden}
   .kpi::after{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:2px;background:linear-gradient(90deg,var(--teal),transparent);opacity:.5}
-  .kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted)}
+  .kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted)}
   .kpi-value{font-size:31px;line-height:1.15;font-weight:700;margin:8px 0 2px;letter-spacing:-.02em}
-  .kpi-sub{font-size:11px;color:var(--muted)}
+  .kpi-sub{font-size:12px;color:var(--muted)}
   .kpi-value small{font-size:12px;font-weight:500;color:var(--muted);margin-left:6px}
 
   .grid-charts{display:grid;grid-template-columns:1.55fr 1fr;gap:12px;margin-top:12px}
   .grid-bottom{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
   .panel{padding:16px 18px 14px}
   .panel h2{font-size:13px;font-weight:600;margin:0 0 2px;letter-spacing:-.01em}
-  .panel .hint{font-size:11px;color:var(--muted);margin:0 0 14px}
+  .panel .hint{font-size:12px;color:var(--muted);margin:0 0 14px}
   .canvas-box{position:relative;width:100%;height:290px}
   .canvas-box.sm{height:152px}
   .donuts{display:grid;grid-template-columns:1fr;gap:14px}
@@ -89,7 +89,7 @@
   #loadError{display:none;margin:16px 0;padding:12px 14px;border-radius:10px;font-size:12.5px;
     background:rgba(232,68,95,.10);border:1px solid rgba(232,68,95,.4);color:#ffb9c5}
   #loadError code{font-family:'JetBrains Mono',monospace}
-  footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
+  footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
 
   @media (max-width:1000px){
     .grid-kpi{grid-template-columns:repeat(2,1fr)}
@@ -229,7 +229,7 @@
   const LABELS = ['No_Disease', 'Low_Risk', 'Moderate_Risk', 'High_Risk', 'Severe_Disease'];
   const NICE = ['No disease', 'Low risk', 'Moderate risk', 'High risk', 'Severe disease'];
   const SEVERITY = ['#2dd4bf', '#4c9df8', '#f5a524', '#fb7c5b', '#e8445f'];
-  const INK = '#7f93ac', GRID = 'rgba(255,255,255,.06)', FONT = 'Inter';
+  const INK = '#b3c7de', GRID = 'rgba(255,255,255,.06)', FONT = 'Inter';
   const BANDS = [];
   let cells = [];
   let barChart, anemiaChart, diabetesChart, severityChart;
@@ -287,8 +287,8 @@
       ctx.save();
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#e7eef8';
-      ctx.font = `700 20px ${FONT}`;
+      ctx.fillStyle = '#f4f8fd';
+      ctx.font = `700 21px ${FONT}`;
       ctx.fillText(pct, cx, cy - 6);
       ctx.fillStyle = INK;
       ctx.font = `500 9px ${FONT}`;
@@ -305,7 +305,7 @@
       const { ctx, chartArea } = chart;
       ctx.save();
       ctx.setLineDash([4, 4]);
-      ctx.strokeStyle = 'rgba(231,238,248,.35)';
+      ctx.strokeStyle = 'rgba(244,248,253,.5)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(chartArea.left, y);
@@ -319,7 +319,7 @@
     responsive: true, maintainAspectRatio: false, cutout: '70%',
     layout: { padding: 2 },
     plugins: {
-      legend: { position: 'right', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 7, padding: 9, color: '#a9bcd3', font: { size: 10 } } },
+      legend: { position: 'right', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 7, padding: 9, color: '#cfdcec', font: { size: 10 } } },
       tooltip: { backgroundColor: '#0b1420', borderColor: '#1d2a3c', borderWidth: 1, padding: 9,
         callbacks: { label: c => ` ${c.label}: ${fmt(c.parsed)}` } },
       datalabels: { display: false }
@@ -352,13 +352,13 @@
           },
           refLine: {},
           datalabels: {
-            color: '#e7eef8', anchor: 'end', align: 'end', offset: 2,
+            color: '#f4f8fd', anchor: 'end', align: 'end', offset: 2,
             font: { weight: '600', size: 11, family: FONT },
             formatter: v => v.toFixed(1).replace('.', ',') + '%'
           }
         },
         scales: {
-          x: { grid: { display: false }, border: { color: GRID }, ticks: { color: '#a9bcd3', font: { size: 10 } } },
+          x: { grid: { display: false }, border: { color: GRID }, ticks: { color: '#b3c7de', font: { size: 11 } } },
           y: {
             beginAtZero: true, max: 100, grid: { color: GRID }, border: { display: false },
             ticks: { color: INK, stepSize: 25, callback: v => v + '%' }
@@ -393,10 +393,11 @@
       options: {
         indexAxis: 'y', responsive: true, maintainAspectRatio: false,
         plugins: {
-          legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'rectRounded', boxWidth: 9, padding: 14, color: '#a9bcd3' } },
+          legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'rectRounded', boxWidth: 9, padding: 14, color: '#cfdcec', font: { size: 11 } } },
           tooltip: { backgroundColor: '#0b1420', borderColor: '#1d2a3c', borderWidth: 1, padding: 10, callbacks: { label: c => ` ${c.dataset.label}: ${fmt(c.parsed.x)}` } },
           datalabels: {
-            color: '#08121b', font: { weight: '700', size: 9, family: FONT },
+            color: c => c.datasetIndex === 4 ? '#ffffff' : '#08121b',
+            font: { weight: '700', size: 9.5, family: FONT },
             formatter: (v, ctx) => {
               const s = ctx.chart.data.datasets.reduce((a, d) => a + d.data[0], 0);
               const p = s ? v * 100 / s : 0;
