@@ -1,0 +1,381 @@
+{
+ "meta": {
+  "source": "Chronic Kidney Disease Dataset (Kaggle)",
+  "file": "kidney_disease_dataset (1).xlsx",
+  "rows": 20538
+ },
+ "labels": [
+  "No_Disease",
+  "Low_Risk",
+  "Moderate_Risk",
+  "High_Risk",
+  "Severe_Disease"
+ ],
+ "totals": {
+  "patients": 20538,
+  "avgAge": 47.48,
+  "avgBP": 130.35
+ },
+ "cells": [
+  {
+   "t": "High_Risk",
+   "h": "no",
+   "d": "no",
+   "a": "no",
+   "n": 86,
+   "age": 3926.0,
+   "bp": 11544.0
+  },
+  {
+   "t": "High_Risk",
+   "h": "no",
+   "d": "no",
+   "a": "yes",
+   "n": 125,
+   "age": 6008.0,
+   "bp": 16457.0
+  },
+  {
+   "t": "High_Risk",
+   "h": "no",
+   "d": "yes",
+   "a": "no",
+   "n": 99,
+   "age": 4582.0,
+   "bp": 13221.0
+  },
+  {
+   "t": "High_Risk",
+   "h": "no",
+   "d": "yes",
+   "a": "yes",
+   "n": 107,
+   "age": 5140.0,
+   "bp": 13769.0
+  },
+  {
+   "t": "High_Risk",
+   "h": "yes",
+   "d": "no",
+   "a": "no",
+   "n": 106,
+   "age": 4478.0,
+   "bp": 13715.0
+  },
+  {
+   "t": "High_Risk",
+   "h": "yes",
+   "d": "no",
+   "a": "yes",
+   "n": 104,
+   "age": 5263.0,
+   "bp": 13276.0
+  },
+  {
+   "t": "High_Risk",
+   "h": "yes",
+   "d": "yes",
+   "a": "no",
+   "n": 98,
+   "age": 4357.0,
+   "bp": 13064.0
+  },
+  {
+   "t": "High_Risk",
+   "h": "yes",
+   "d": "yes",
+   "a": "yes",
+   "n": 96,
+   "age": 4265.0,
+   "bp": 12254.0
+  },
+  {
+   "t": "Low_Risk",
+   "h": "no",
+   "d": "no",
+   "a": "no",
+   "n": 276,
+   "age": 12598.0,
+   "bp": 35760.0
+  },
+  {
+   "t": "Low_Risk",
+   "h": "no",
+   "d": "no",
+   "a": "yes",
+   "n": 244,
+   "age": 11578.0,
+   "bp": 32384.0
+  },
+  {
+   "t": "Low_Risk",
+   "h": "no",
+   "d": "yes",
+   "a": "no",
+   "n": 254,
+   "age": 11594.0,
+   "bp": 33270.0
+  },
+  {
+   "t": "Low_Risk",
+   "h": "no",
+   "d": "yes",
+   "a": "yes",
+   "n": 261,
+   "age": 12223.0,
+   "bp": 34373.0
+  },
+  {
+   "t": "Low_Risk",
+   "h": "yes",
+   "d": "no",
+   "a": "no",
+   "n": 244,
+   "age": 11893.0,
+   "bp": 31490.0
+  },
+  {
+   "t": "Low_Risk",
+   "h": "yes",
+   "d": "no",
+   "a": "yes",
+   "n": 278,
+   "age": 13499.0,
+   "bp": 36608.0
+  },
+  {
+   "t": "Low_Risk",
+   "h": "yes",
+   "d": "yes",
+   "a": "no",
+   "n": 262,
+   "age": 12051.0,
+   "bp": 33593.0
+  },
+  {
+   "t": "Low_Risk",
+   "h": "yes",
+   "d": "yes",
+   "a": "yes",
+   "n": 235,
+   "age": 11309.0,
+   "bp": 30640.0
+  },
+  {
+   "t": "Moderate_Risk",
+   "h": "no",
+   "d": "no",
+   "a": "no",
+   "n": 108,
+   "age": 4740.0,
+   "bp": 14190.0
+  },
+  {
+   "t": "Moderate_Risk",
+   "h": "no",
+   "d": "no",
+   "a": "yes",
+   "n": 110,
+   "age": 4904.0,
+   "bp": 14676.0
+  },
+  {
+   "t": "Moderate_Risk",
+   "h": "no",
+   "d": "yes",
+   "a": "no",
+   "n": 101,
+   "age": 4974.0,
+   "bp": 13119.0
+  },
+  {
+   "t": "Moderate_Risk",
+   "h": "no",
+   "d": "yes",
+   "a": "yes",
+   "n": 113,
+   "age": 5367.0,
+   "bp": 14995.0
+  },
+  {
+   "t": "Moderate_Risk",
+   "h": "yes",
+   "d": "no",
+   "a": "no",
+   "n": 86,
+   "age": 4095.0,
+   "bp": 11392.0
+  },
+  {
+   "t": "Moderate_Risk",
+   "h": "yes",
+   "d": "no",
+   "a": "yes",
+   "n": 112,
+   "age": 5668.0,
+   "bp": 14536.0
+  },
+  {
+   "t": "Moderate_Risk",
+   "h": "yes",
+   "d": "yes",
+   "a": "no",
+   "n": 106,
+   "age": 4695.0,
+   "bp": 13893.0
+  },
+  {
+   "t": "Moderate_Risk",
+   "h": "yes",
+   "d": "yes",
+   "a": "yes",
+   "n": 85,
+   "age": 3672.0,
+   "bp": 11244.0
+  },
+  {
+   "t": "No_Disease",
+   "h": "no",
+   "d": "no",
+   "a": "no",
+   "n": 2007,
+   "age": 95810.0,
+   "bp": 261844.0
+  },
+  {
+   "t": "No_Disease",
+   "h": "no",
+   "d": "no",
+   "a": "yes",
+   "n": 1997,
+   "age": 95126.0,
+   "bp": 260877.0
+  },
+  {
+   "t": "No_Disease",
+   "h": "no",
+   "d": "yes",
+   "a": "no",
+   "n": 2060,
+   "age": 97689.0,
+   "bp": 269357.0
+  },
+  {
+   "t": "No_Disease",
+   "h": "no",
+   "d": "yes",
+   "a": "yes",
+   "n": 2085,
+   "age": 100079.0,
+   "bp": 270078.0
+  },
+  {
+   "t": "No_Disease",
+   "h": "yes",
+   "d": "no",
+   "a": "no",
+   "n": 2045,
+   "age": 98832.0,
+   "bp": 266986.0
+  },
+  {
+   "t": "No_Disease",
+   "h": "yes",
+   "d": "no",
+   "a": "yes",
+   "n": 2163,
+   "age": 102539.0,
+   "bp": 281006.0
+  },
+  {
+   "t": "No_Disease",
+   "h": "yes",
+   "d": "yes",
+   "a": "no",
+   "n": 1982,
+   "age": 94871.0,
+   "bp": 258141.0
+  },
+  {
+   "t": "No_Disease",
+   "h": "yes",
+   "d": "yes",
+   "a": "yes",
+   "n": 2093,
+   "age": 98294.0,
+   "bp": 271627.0
+  },
+  {
+   "t": "Severe_Disease",
+   "h": "no",
+   "d": "no",
+   "a": "no",
+   "n": 53,
+   "age": 2718.0,
+   "bp": 7173.0
+  },
+  {
+   "t": "Severe_Disease",
+   "h": "no",
+   "d": "no",
+   "a": "yes",
+   "n": 44,
+   "age": 2019.0,
+   "bp": 5574.0
+  },
+  {
+   "t": "Severe_Disease",
+   "h": "no",
+   "d": "yes",
+   "a": "no",
+   "n": 46,
+   "age": 2259.0,
+   "bp": 5624.0
+  },
+  {
+   "t": "Severe_Disease",
+   "h": "no",
+   "d": "yes",
+   "a": "yes",
+   "n": 51,
+   "age": 2554.0,
+   "bp": 6246.0
+  },
+  {
+   "t": "Severe_Disease",
+   "h": "yes",
+   "d": "no",
+   "a": "no",
+   "n": 55,
+   "age": 2457.0,
+   "bp": 7441.0
+  },
+  {
+   "t": "Severe_Disease",
+   "h": "yes",
+   "d": "no",
+   "a": "yes",
+   "n": 57,
+   "age": 2590.0,
+   "bp": 7531.0
+  },
+  {
+   "t": "Severe_Disease",
+   "h": "yes",
+   "d": "yes",
+   "a": "no",
+   "n": 62,
+   "age": 2648.0,
+   "bp": 8625.0
+  },
+  {
+   "t": "Severe_Disease",
+   "h": "yes",
+   "d": "yes",
+   "a": "yes",
+   "n": 42,
+   "age": 1737.0,
+   "bp": 5578.0
+  }
+ ]
+}
