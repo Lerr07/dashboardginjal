@@ -1,234 +1,465 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Penyakit Ginjal</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Status & Risiko Penyakit Ginjal</title>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
-    <!-- Chart.js DataLabels Plugin (Untuk menampilkan persentase di dalam pie chart) -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<style>
+  :root{
+    --bg:#080d15; --panel:#101a28; --panel2:#0b1420; --line:#1d2a3c;
+    --text:#e7eef8; --muted:#7f93ac;
+    --teal:#2dd4bf; --blue:#4c9df8; --amber:#f5a524; --high:#fb7c5b; --severe:#e8445f;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    background-image:
+      radial-gradient(900px 400px at 12% -10%, rgba(45,212,191,.10), transparent 60%),
+      radial-gradient(700px 380px at 95% 0%, rgba(76,157,248,.09), transparent 60%);
+    background-repeat:no-repeat;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 20px 56px}
+  .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
 
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-    </style>
+  header.top{
+    position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);
+    background:rgba(8,13,21,.82);backdrop-filter:blur(10px);
+  }
+  .top-in{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .mark{
+    width:34px;height:34px;border-radius:9px;flex:none;display:grid;place-items:center;
+    border:1px solid rgba(45,212,191,.35);background:rgba(45,212,191,.10);
+    color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+  }
+  .brand h1{font-size:15px;font-weight:600;margin:0;letter-spacing:-.01em}
+  .brand p{margin:2px 0 0;font-size:11px;color:var(--muted);letter-spacing:.02em}
+  .top-meta{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .pill{
+    font-size:11px;color:var(--muted);border:1px solid var(--line);background:var(--panel2);
+    padding:6px 10px;border-radius:999px;white-space:nowrap;
+  }
+  .pill b{color:var(--text);font-weight:500}
+
+  .toolbar{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:20px 0 18px}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:10px;text-transform:uppercase;letter-spacing:.10em;color:var(--muted)}
+  select.f{
+    appearance:none;background:var(--panel2);color:var(--text);border:1px solid var(--line);
+    border-radius:10px;padding:9px 32px 9px 12px;font-size:13px;font-family:inherit;cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4l4 4 4-4' fill='none' stroke='%237f93ac' stroke-width='1.6' stroke-linecap='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 11px center;
+  }
+  select.f:focus{outline:none;border-color:rgba(45,212,191,.55);box-shadow:0 0 0 3px rgba(45,212,191,.12)}
+  .btn-reset{
+    margin-top:18px;background:transparent;color:var(--muted);border:1px solid var(--line);
+    border-radius:10px;padding:9px 13px;font-size:12px;cursor:pointer;font-family:inherit;
+  }
+  .btn-reset:hover{color:var(--text);border-color:#2b3d55}
+
+  .grid-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+  .kpi{padding:16px 16px 14px;position:relative;overflow:hidden}
+  .kpi::after{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:2px;background:linear-gradient(90deg,var(--teal),transparent);opacity:.5}
+  .kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted)}
+  .kpi-value{font-size:31px;line-height:1.15;font-weight:700;margin:8px 0 2px;letter-spacing:-.02em}
+  .kpi-sub{font-size:11px;color:var(--muted)}
+  .kpi-value small{font-size:12px;font-weight:500;color:var(--muted);margin-left:6px}
+
+  .grid-charts{display:grid;grid-template-columns:1.55fr 1fr;gap:12px;margin-top:12px}
+  .grid-bottom{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+  .panel{padding:16px 18px 14px}
+  .panel h2{font-size:13px;font-weight:600;margin:0 0 2px;letter-spacing:-.01em}
+  .panel .hint{font-size:11px;color:var(--muted);margin:0 0 14px}
+  .canvas-box{position:relative;width:100%;height:290px}
+  .canvas-box.sm{height:152px}
+  .donuts{display:grid;grid-template-columns:1fr;gap:14px}
+  .donut-item{display:flex;flex-direction:column;gap:6px}
+  .donut-item h3{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0;font-weight:600}
+
+  #loadError{display:none;margin:16px 0;padding:12px 14px;border-radius:10px;font-size:12.5px;
+    background:rgba(232,68,95,.10);border:1px solid rgba(232,68,95,.4);color:#ffb9c5}
+  #loadError code{font-family:'JetBrains Mono',monospace}
+  footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
+
+  @media (max-width:1000px){
+    .grid-kpi{grid-template-columns:repeat(2,1fr)}
+    .grid-charts{grid-template-columns:1fr}
+    .donuts{grid-template-columns:1fr 1fr}
+    .canvas-box.sm{height:170px}
+  }
+  @media (max-width:560px){
+    .grid-kpi{grid-template-columns:1fr}
+    .donuts{grid-template-columns:1fr}
+    .kpi-value{font-size:27px}
+    .top-meta{width:100%;margin-left:0}
+  }
+</style>
 </head>
-<body class="p-4 md:p-8">
+<body>
 
-    <div class="max-w-6xl mx-auto space-y-6">
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <div class="mark">CKD</div>
+      <div>
+        <h1>Dashboard Status &amp; Risiko Penyakit Ginjal</h1>
+        <p>Analisis dataset Chronic Kidney Disease — 5 stadium risiko</p>
+      </div>
+    </div>
+    <div class="top-meta">
+      <span class="pill">Sampel <b class="mono" id="metaRows">—</b></span>
+      <span class="pill">Berkas <b id="metaFile">—</b></span>
+    </div>
+  </div>
+</header>
 
-        <!-- Header & Identitas -->
-        <div class="text-center mb-8">
-            <h1 class="text-2xl md:text-3xl font-bold text-slate-800">Dashboard Pemantauan Status & Risiko Penyakit Ginjal</h1>
-            <p class="text-sm text-slate-500 mt-1">Sumber Data: <span id="dataSource">memuat…</span></p>
-        </div>
+<div class="wrap">
 
-        <!-- Peringatan bila data.json gagal dimuat -->
-        <div id="loadError" class="hidden bg-red-50 border border-red-300 text-red-700 text-sm rounded-md p-3">
-            Gagal memuat <code>data.json</code>. Jalankan lewat server (mis. <code>python -m http.server</code>) atau GitHub Pages — <code>file://</code> memblokir <code>fetch()</code>.
-        </div>
+  <div id="loadError">
+    Gagal memuat <code>data.json</code>. Buka lewat server (<code>python -m http.server</code>) atau GitHub Pages —
+    protokol <code>file://</code> memblokir <code>fetch()</code>.
+  </div>
 
-        <!-- Filter Interaktif -->
-        <div class="flex flex-wrap justify-center gap-4 mb-6">
-            <select id="filterAnemia" onchange="updateCharts()" class="bg-white border border-slate-300 text-slate-700 py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="all">Semua Status Anemia</option>
-                <option value="yes">Anemia (Yes)</option>
-                <option value="no">Anemia (No)</option>
-            </select>
-            <select id="filterDiabetes" onchange="updateCharts()" class="bg-white border border-slate-300 text-slate-700 py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="all">Semua Status Diabetes</option>
-                <option value="yes">Diabetes (Yes)</option>
-                <option value="no">Diabetes (No)</option>
-            </select>
-        </div>
+  <div class="toolbar">
+    <div class="field">
+      <label for="filterHtn">Hipertensi</label>
+      <select id="filterHtn" class="f" onchange="updateCharts()">
+        <option value="all">Semua</option>
+        <option value="yes">Ya</option>
+        <option value="no">Tidak</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="filterAnemia">Anemia</label>
+      <select id="filterAnemia" class="f" onchange="updateCharts()">
+        <option value="all">Semua</option>
+        <option value="yes">Ya</option>
+        <option value="no">Tidak</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="filterDiabetes">Diabetes Melitus</label>
+      <select id="filterDiabetes" class="f" onchange="updateCharts()">
+        <option value="all">Semua</option>
+        <option value="yes">Ya</option>
+        <option value="no">Tidak</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="filterBand">Kelompok Umur</label>
+      <select id="filterBand" class="f" onchange="updateCharts()">
+        <option value="all">Semua umur</option>
+      </select>
+    </div>
+    <button class="btn-reset" onclick="resetFilters()">Reset filter</button>
+  </div>
 
-        <!-- Scorecard Indikator -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 text-center">
-                <p class="text-sm font-semibold text-slate-500">Total Data Pasien</p>
-                <p class="text-3xl font-bold text-slate-800 mt-2" id="totalPatients">—</p>
-                <p class="text-xs text-slate-400 mt-1">Record Count</p>
-            </div>
-            <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 text-center">
-                <p class="text-sm font-semibold text-slate-500">Rata-rata Usia</p>
-                <p class="text-3xl font-bold text-slate-800 mt-2" id="avgAge">—</p>
-                <p class="text-xs text-slate-400 mt-1">Age of the patient</p>
-            </div>
-            <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 text-center">
-                <p class="text-sm font-semibold text-slate-500">Rata-rata Tekanan Darah</p>
-                <p class="text-3xl font-bold text-slate-800 mt-2" id="avgBP">—</p>
-                <p class="text-xs text-slate-400 mt-1">Blood pressure (mm/Hg)</p>
-            </div>
-        </div>
+  <div class="grid-kpi">
+    <div class="card kpi">
+      <div class="kpi-label">Total pasien</div>
+      <div class="kpi-value mono" id="totalPatients">—</div>
+      <div class="kpi-sub">record terfilter</div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">Rata-rata usia</div>
+      <div class="kpi-value mono"><span id="avgAge">—</span><small>th</small></div>
+      <div class="kpi-sub">age of the patient</div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">Rata-rata tekanan darah</div>
+      <div class="kpi-value mono"><span id="avgBP">—</span><small>mmHg</small></div>
+      <div class="kpi-sub">blood pressure</div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">Proporsi risiko tinggi</div>
+      <div class="kpi-value mono"><span id="highRisk">—</span></div>
+      <div class="kpi-sub">High risk + Severe disease</div>
+    </div>
+  </div>
 
-        <!-- Area Grafik -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-
-            <!-- Grafik Batang: Hipertensi -->
-            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                <h3 class="text-md font-semibold text-slate-800 mb-4 text-center">Hubungan Penyakit Ginjal dengan Hipertensi</h3>
-                <div class="relative w-full h-72">
-                    <canvas id="hypertensionChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Grafik Donat: Anemia & Diabetes -->
-            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 flex flex-col md:flex-row justify-around items-center gap-6 h-full">
-
-                <div class="flex-1 flex flex-col items-center">
-                    <h3 class="text-sm font-semibold text-slate-800 mb-2">Perbandingan Anemia (yes/no)</h3>
-                    <div class="relative w-40 h-40">
-                        <canvas id="anemiaChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="flex-1 flex flex-col items-center">
-                    <h3 class="text-sm font-semibold text-slate-800 mb-2">Perbandingan Diabetes (yes/no)</h3>
-                    <div class="relative w-40 h-40">
-                        <canvas id="diabetesChart"></canvas>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
+  <div class="grid-charts">
+    <div class="card panel">
+      <h2>Proporsi hipertensi menurut stadium risiko</h2>
+      <p class="hint">Persentase pasien dengan hipertensi di tiap kelas target. Arahkan kursor untuk jumlah absolut.</p>
+      <div class="canvas-box"><canvas id="hypertensionChart"></canvas></div>
     </div>
 
-    <!-- JavaScript Logic -->
-    <script>
-        // Mendaftarkan plugin datalabels untuk memunculkan persentase
-        Chart.register(ChartDataLabels);
+    <div class="card panel">
+      <h2>Komorbiditas</h2>
+      <p class="hint">Proporsi anemia dan diabetes pada populasi terfilter.</p>
+      <div class="donuts">
+        <div class="donut-item">
+          <h3>Anemia</h3>
+          <div class="canvas-box sm"><canvas id="anemiaChart"></canvas></div>
+        </div>
+        <div class="donut-item">
+          <h3>Diabetes melitus</h3>
+          <div class="canvas-box sm"><canvas id="diabetesChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        const LABELS = ['No_Disease', 'Low_Risk', 'Moderate_Risk', 'High_Risk', 'Severe_Disease'];
-        let cells = [];   // agregat per (stadium, hipertensi, diabetes, anemia)
-        let barChart, anemiaChart, diabetesChart;
+  <div class="grid-bottom">
+    <div class="card panel">
+      <h2>Komposisi stadium risiko</h2>
+      <p class="hint">Distribusi 100% kelas target pada data terfilter.</p>
+      <div class="canvas-box" style="height:96px"><canvas id="severityChart"></canvas></div>
+    </div>
+  </div>
 
-        // Agregasi ulang dari data.json sesuai filter terpilih
-        function aggregate() {
-            const fa = document.getElementById('filterAnemia').value;
-            const fd = document.getElementById('filterDiabetes').value;
-            const sel = cells.filter(c => (fa === 'all' || c.a === fa) && (fd === 'all' || c.d === fd));
+  <footer>
+    <span>Sumber: <span id="dataSource">memuat…</span></span>
+    <span class="mono">data.json · scripts/build_data.py</span>
+  </footer>
+</div>
 
-            const out = {
-                n: 0, age: 0, bp: 0,
-                htnYes: Array(5).fill(0), htnNo: Array(5).fill(0),
-                anemia: { yes: 0, no: 0 }, diabetes: { yes: 0, no: 0 }
-            };
-            sel.forEach(c => {
-                const i = LABELS.indexOf(c.t);
-                out.n += c.n; out.age += c.age; out.bp += c.bp;
-                out[c.h === 'yes' ? 'htnYes' : 'htnNo'][i] += c.n;
-                out.anemia[c.a] += c.n;
-                out.diabetes[c.d] += c.n;
-            });
-            return out;
-        }
+<script>
+  Chart.register(ChartDataLabels);
 
-        // Pengaturan umum untuk Doughnut Chart
-        const doughnutOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '55%',
-            plugins: {
-                legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 8, font: {size: 10} } },
-                datalabels: {
-                    color: '#ffffff',
-                    font: { weight: 'bold', size: 11 },
-                    formatter: (value, ctx) => {
-                        let sum = 0;
-                        let dataArr = ctx.chart.data.datasets[0].data;
-                        dataArr.map(data => { sum += data; });
-                        let percentage = (value * 100 / sum).toFixed(1) + "%";
-                        return percentage;
-                    }
-                }
+  const LABELS = ['No_Disease', 'Low_Risk', 'Moderate_Risk', 'High_Risk', 'Severe_Disease'];
+  const NICE = ['No disease', 'Low risk', 'Moderate risk', 'High risk', 'Severe disease'];
+  const SEVERITY = ['#2dd4bf', '#4c9df8', '#f5a524', '#fb7c5b', '#e8445f'];
+  const INK = '#7f93ac', GRID = 'rgba(255,255,255,.06)', FONT = 'Inter';
+  const BANDS = [];
+  let cells = [];
+  let barChart, anemiaChart, diabetesChart, severityChart;
+  let barCounts = [];
+
+  Chart.defaults.color = INK;
+  Chart.defaults.font.family = FONT;
+  Chart.defaults.font.size = 11;
+  Chart.defaults.borderColor = GRID;
+
+  const el = id => document.getElementById(id);
+  const val = id => el(id).value;
+  const fmt = n => n.toLocaleString('id-ID');
+
+  // Agregasi ulang dari 40 sel. `skip` = dimensi yang diabaikan; dipakai doughnut
+  // supaya donat tetap menampilkan kedua kategori walau filternya sendiri aktif.
+  function aggregate(skip) {
+    const fh = val('filterHtn'), fa = val('filterAnemia'), fd = val('filterDiabetes'), fb = val('filterBand');
+    const bi = fb === 'all' ? -1 : BANDS.indexOf(fb);
+
+    const out = {
+      n: 0, age: 0, bp: 0,
+      byT: Array(5).fill(0), htnYes: Array(5).fill(0), htnNo: Array(5).fill(0),
+      anemia: { yes: 0, no: 0 }, diabetes: { yes: 0, no: 0 }
+    };
+
+    for (const c of cells) {
+      if (skip !== 'h' && fh !== 'all' && c.h !== fh) continue;
+      if (skip !== 'a' && fa !== 'all' && c.a !== fa) continue;
+      if (skip !== 'd' && fd !== 'all' && c.d !== fd) continue;
+
+      const i = LABELS.indexOf(c.t);
+      c.buckets.forEach((b, k) => {
+        if (bi >= 0 && k !== bi) return;
+        out.n += b.n; out.age += b.age; out.bp += b.bp;
+        out.byT[i] += b.n;
+        out[c.h === 'yes' ? 'htnYes' : 'htnNo'][i] += b.n;
+        out.anemia[c.a] += b.n;
+        out.diabetes[c.d] += b.n;
+      });
+    }
+    return out;
+  }
+
+  // Angka persen di tengah donat: menghindari label yang terpotong di lengkung tipis.
+  const centerText = {
+    id: 'centerText',
+    afterDraw(chart) {
+      const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+      if (!total) return;
+      const pct = (chart.data.datasets[0].data[0] * 100 / total).toFixed(1).replace('.', ',') + '%';
+      const { ctx, chartArea } = chart;
+      const cx = (chartArea.left + chartArea.right) / 2;
+      const cy = (chartArea.top + chartArea.bottom) / 2;
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#e7eef8';
+      ctx.font = `700 20px ${FONT}`;
+      ctx.fillText(pct, cx, cy - 6);
+      ctx.fillStyle = INK;
+      ctx.font = `500 9px ${FONT}`;
+      ctx.fillText('YA', cx, cy + 14);
+      ctx.restore();
+    }
+  };
+
+  // Garis acuan 50% supaya deviasi tiap stadium terbaca walau sumbu 0-100%.
+  const refLine = {
+    id: 'refLine',
+    afterDatasetsDraw(chart) {
+      const y = chart.scales.y.getPixelForValue(50);
+      const { ctx, chartArea } = chart;
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = 'rgba(231,238,248,.35)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(chartArea.left, y);
+      ctx.lineTo(chartArea.right, y);
+      ctx.stroke();
+      ctx.restore();
+    }
+  };
+
+  const donutOpts = () => ({
+    responsive: true, maintainAspectRatio: false, cutout: '70%',
+    layout: { padding: 2 },
+    plugins: {
+      legend: { position: 'right', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 7, padding: 9, color: '#a9bcd3', font: { size: 10 } } },
+      tooltip: { backgroundColor: '#0b1420', borderColor: '#1d2a3c', borderWidth: 1, padding: 9,
+        callbacks: { label: c => ` ${c.label}: ${fmt(c.parsed)}` } },
+      datalabels: { display: false }
+    }
+  });
+
+  function initCharts() {
+    barChart = new Chart(el('hypertensionChart'), {
+      type: 'bar',
+      data: {
+        labels: NICE,
+        datasets: [
+          { label: 'Hipertensi: ya', data: [], backgroundColor: '#f5a524', borderRadius: 5, borderSkipped: false, maxBarThickness: 40 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0b1420', borderColor: '#1d2a3c', borderWidth: 1, padding: 10,
+            callbacks: {
+              label: c => {
+                const s = barCounts[c.dataIndex];
+                return ` ${fmt(s.yes)} dari ${fmt(s.total)} pasien`;
+              },
+              afterLabel: c => ` tanpa hipertensi: ${fmt(barCounts[c.dataIndex].no)}`
             }
-        };
-
-        function initCharts() {
-            // 1. Bar Chart (Hipertensi)
-            barChart = new Chart(document.getElementById('hypertensionChart').getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: LABELS,
-                    datasets: [
-                        { label: 'yes', data: [], backgroundColor: '#f6993f', borderWidth: 0 },
-                        { label: 'no',  data: [], backgroundColor: '#3490dc', borderWidth: 0 }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'top', align: 'start', labels: { usePointStyle: true, boxWidth: 8 } },
-                        datalabels: { display: false } // Matikan datalabels untuk bar chart agar tidak penuh
-                    },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { callback: function(value) { return value / 1000 + ' rb'; } } }
-                    }
-                }
-            });
-
-            // 2. Doughnut Anemia
-            anemiaChart = new Chart(document.getElementById('anemiaChart').getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['yes', 'no'],
-                    datasets: [{ data: [], backgroundColor: ['#f6993f', '#3490dc'], borderWidth: 2, borderColor: '#ffffff' }]
-                },
-                options: doughnutOptions
-            });
-
-            // 3. Doughnut Diabetes
-            diabetesChart = new Chart(document.getElementById('diabetesChart').getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['yes', 'no'],
-                    datasets: [{ data: [], backgroundColor: ['#f6993f', '#3490dc'], borderWidth: 2, borderColor: '#ffffff' }]
-                },
-                options: doughnutOptions
-            });
+          },
+          refLine: {},
+          datalabels: {
+            color: '#e7eef8', anchor: 'end', align: 'end', offset: 2,
+            font: { weight: '600', size: 11, family: FONT },
+            formatter: v => v.toFixed(1).replace('.', ',') + '%'
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, border: { color: GRID }, ticks: { color: '#a9bcd3', font: { size: 10 } } },
+          y: {
+            beginAtZero: true, max: 100, grid: { color: GRID }, border: { display: false },
+            ticks: { color: INK, stepSize: 25, callback: v => v + '%' }
+          }
         }
+      },
+      plugins: [refLine]
+    });
 
-        // 4. Fungsi Interaktif: hitung ulang scorecard + grafik dari data.json
-        function updateCharts() {
-            if (!cells.length) return;
-            const a = aggregate();
+    anemiaChart = new Chart(el('anemiaChart'), {
+      type: 'doughnut',
+      data: { labels: ['Anemia: ya', 'Anemia: tidak'], datasets: [{ data: [], backgroundColor: ['#4c9df8', '#44617f'], borderColor: '#101a28', borderWidth: 2 }] },
+      options: donutOpts(),
+      plugins: [centerText]
+    });
 
-            document.getElementById('totalPatients').innerText = a.n.toLocaleString('id-ID');
-            document.getElementById('avgAge').innerText = a.n ? (a.age / a.n).toFixed(1).replace('.', ',') : '—';
-            document.getElementById('avgBP').innerText = a.n ? Math.round(a.bp / a.n).toString() : '—';
+    diabetesChart = new Chart(el('diabetesChart'), {
+      type: 'doughnut',
+      data: { labels: ['DM: ya', 'DM: tidak'], datasets: [{ data: [], backgroundColor: ['#4c9df8', '#44617f'], borderColor: '#101a28', borderWidth: 2 }] },
+      options: donutOpts(),
+      plugins: [centerText]
+    });
 
-            barChart.data.datasets[0].data = a.htnYes;
-            barChart.data.datasets[1].data = a.htnNo;
-            barChart.update();
-
-            anemiaChart.data.datasets[0].data = [a.anemia.yes, a.anemia.no];
-            anemiaChart.update();
-
-            diabetesChart.data.datasets[0].data = [a.diabetes.yes, a.diabetes.no];
-            diabetesChart.update();
+    severityChart = new Chart(el('severityChart'), {
+      type: 'bar',
+      data: {
+        labels: [''],
+        datasets: LABELS.map((t, i) => ({
+          label: NICE[i], data: [0], backgroundColor: SEVERITY[i], borderWidth: 0
+        }))
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'rectRounded', boxWidth: 9, padding: 14, color: '#a9bcd3' } },
+          tooltip: { backgroundColor: '#0b1420', borderColor: '#1d2a3c', borderWidth: 1, padding: 10, callbacks: { label: c => ` ${c.dataset.label}: ${fmt(c.parsed.x)}` } },
+          datalabels: {
+            color: '#08121b', font: { weight: '700', size: 9, family: FONT },
+            formatter: (v, ctx) => {
+              const s = ctx.chart.data.datasets.reduce((a, d) => a + d.data[0], 0);
+              const p = s ? v * 100 / s : 0;
+              return p >= 1.4 ? p.toFixed(1) + '%' : '';
+            }
+          }
+        },
+        scales: {
+          x: { stacked: true, display: false, beginAtZero: true },
+          y: { stacked: true, display: false }
         }
+      }
+    });
+  }
 
-        // Muat data agregat (hasil scripts/build_data.py)
-        fetch('./data.json', { cache: 'no-store' })
-            .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-            .then(d => {
-                cells = d.cells;
-                document.getElementById('dataSource').innerText =
-                    `${d.meta.source} — ${d.meta.rows.toLocaleString('id-ID')} baris (${d.meta.file})`;
-                initCharts();
-                updateCharts();
-            })
-            .catch(err => {
-                console.error(err);
-                document.getElementById('loadError').classList.remove('hidden');
-            });
-    </script>
+  function updateCharts() {
+    if (!cells.length) return;
+
+    const a = aggregate();
+    const ca = aggregate('a');
+    const cd = aggregate('d');
+
+    el('totalPatients').innerText = fmt(a.n);
+    el('avgAge').innerText = a.n ? (a.age / a.n).toFixed(1).replace('.', ',') : '—';
+    el('avgBP').innerText = a.n ? Math.round(a.bp / a.n) : '—';
+    el('highRisk').innerText = a.n ? ((a.byT[3] + a.byT[4]) * 100 / a.n).toFixed(1).replace('.', ',') + '%' : '—';
+
+    barCounts = a.htnYes.map((yes, i) => ({ yes, no: a.htnNo[i], total: a.byT[i] }));
+    barChart.data.datasets[0].data = a.htnYes.map((yes, i) => a.byT[i] ? +(yes * 100 / a.byT[i]).toFixed(1) : 0);
+    barChart.update();
+
+    anemiaChart.data.datasets[0].data = [ca.anemia.yes, ca.anemia.no];
+    anemiaChart.update();
+
+    diabetesChart.data.datasets[0].data = [cd.diabetes.yes, cd.diabetes.no];
+    diabetesChart.update();
+
+    severityChart.data.datasets.forEach((ds, i) => { ds.data = [a.byT[i]]; });
+    severityChart.update();
+  }
+
+  function resetFilters() {
+    ['filterHtn', 'filterAnemia', 'filterDiabetes', 'filterBand'].forEach(id => { el(id).value = 'all'; });
+    updateCharts();
+  }
+
+  fetch('./data.json', { cache: 'no-store' })
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(d => {
+      cells = d.cells;
+      BANDS.push(...d.bands);
+      d.bands.forEach(b => el('filterBand').insertAdjacentHTML('beforeend', `<option value="${b}">${b} tahun</option>`));
+      el('metaRows').innerText = fmt(d.meta.rows);
+      el('metaFile').innerText = d.meta.file;
+      el('dataSource').innerText = `${d.meta.source} — ${fmt(d.meta.rows)} baris`;
+      initCharts();
+      updateCharts();
+    })
+    .catch(err => {
+      console.error(err);
+      el('loadError').style.display = 'block';
+    });
+</script>
 </body>
 </html>
